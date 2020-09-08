@@ -32,10 +32,16 @@ class AuthController extends Controller
             ]);
         }
 
-        return new JsonResponse([
+        $data = [
             "user" => $user,
             "token" => $user->createToken('web')->plainTextToken,
-        ]);
+        ];
+
+        if ($user->role === "admin"){
+            $data["users"] = User::all();
+        }
+
+        return new JsonResponse($data);
     }
 
     public function register(Request $request)
@@ -56,7 +62,7 @@ class AuthController extends Controller
         $user = User::create($data);
 
         return new JsonResponse([
-            'data' => $user
+            "user" => $user
         ]);
     }
 
